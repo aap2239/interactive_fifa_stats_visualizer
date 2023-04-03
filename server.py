@@ -140,6 +140,33 @@ def players():
         return render_template("error.html")
 
 
+@app.route("/awards")
+def awards():
+    try:
+        select_query = """SELECT 
+  							Award_ID, 
+							Award_Name, 
+							Award_Description, 
+							Year_Introduced
+						FROM 
+							Awards"""
+        cursor = g.conn.execute(text(select_query))
+        players = []
+        for result in cursor:
+            players_dict = {
+                "award_id": result[0],
+                "award_name": result[1],
+                "award_description": result[2],
+                "year_introduced": result[3],
+            }
+            players.append(players_dict)
+        cursor.close()
+        context = dict(players=players)
+        return render_template("awards.html", **context)
+    except Exception as e:
+        print(e)
+        return render_template("error.html")
+
 # Example of adding new data to the database
 @app.route("/add", methods=["POST"])
 def add():
