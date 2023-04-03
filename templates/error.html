@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Error</title>
+      <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+      <style>
+         body {
+         background-color: #f9f9f9;
+         font-family: 'Roboto Condensed', sans-serif;
+         }
+         .container {
+         margin-top: 100px;
+         }
+         .card {
+         border-radius: 10px;
+         box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+         }
+         .card-header {
+         background-color: #007bff;
+         color: #fff;
+         font-weight: bold;
+         text-align: center;
+         }
+         .card-body {
+         padding: 50px;
+         }
+         .btn-back {
+         margin-top: 20px;
+         }
+      </style>
+   </head>
+   <body>
+      <div class="container">
+         <div class="row justify-content-center">
+            <div class="col-md-8">
+               <div class="card">
+                  <div class="card-header">
+                     <h1>Oops! Something went wrong.</h1>
+                  </div>
+                  <div class="card-body">
+                     <p>Sorry, we encountered an error while processing your request. Please try again later.</p>
+                     <img src="https://st.depositphotos.com/47577860/53440/v/600/depositphotos_534402556-stock-illustration-device-error-mobile-icon-outline.jpg" alt="Football image">
+                     <button class="btn btn-primary btn-back" onclick="window.history.back()">Go Back</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+   </body>
+</html>

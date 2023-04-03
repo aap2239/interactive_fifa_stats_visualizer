@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Countries </title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+   </head>
+   <body>
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-md-2 bg-dark">
+               <ul class="nav flex-column">
+                  <li class="nav-item">
+                     <a class="nav-link" href="/">Home</a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link active" href="/countries">Countries</a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link" href="#">Players</a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link" href="#">Matches</a>
+                  </li>
+               </ul>
+            </div>
+            <div class="col-md-10">
+               <h1>Countries</h1>
+               <table class="table table-striped">
+                  <thead>
+                     <tr>
+                        <th>Country ID</th>
+                        <th>Country Name</th>
+                        <th>Country Code</th>
+                        <th>Federation Name</th>
+                        <th>Region Name</th>
+                        <th>Confederation ID</th>
+                        <!-- <th>Country Wiki</th> -->
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for team in countries %}
+                     <tr>
+                        <td>{{ team.Country_ID }}</td>
+                        <td>{{ team.Country_Name }}</td>
+                        <td>{{ team.Country_Code }}</td>
+                        <td>{{ team.Federation_Name }}</td>
+                        <td>{{ team.Region_Name }}</td>
+                        <td>{{ team.Confederation_ID }}</td>
+                        <!-- <td>{{ team.Country_Wiki }}</td> -->
+                     </tr>
+                     {% endfor %}
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+   </body>
+</html>

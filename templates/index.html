@@ -1,29 +1,37 @@
+<!DOCTYPE html>
 <html>
-  <style>
-    body{ 
-      font-size: 15pt;
-      font-family: arial;
-    }
-  </style>
-
-
-<body>
-  <h1>Some famous Computer Scientists</h1>
-  <div>{{data}}</div>
-
-  <div>
-    {% for n in data %}
-    <div>{{n}}</div>
-    {% endfor %}
-  </div>
-
-<p><a href="another">Go to the other page</a></p>
-
-<form method="POST" action="/add">
-<p>Name of new computer scientist: <input type="text" name="name"> <input type="submit" value="Add"></p>
-</form>
-
-</body>
-
-
+   <head>
+      <title>FIFA World Cup Statistics Visualizer</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+   </head>
+   <body>
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-md-2 bg-dark">
+               <ul class="nav flex-column">
+                  <li class="nav-item">
+                     <a class="nav-link active" href="/">Home</a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link" href="/countries">Countries</a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link" href="#">Players</a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link" href="#">Matches</a>
+                  </li>
+               </ul>
+            </div>
+            <div class="col-md-10">
+               <h1>FIFA World Cup Statistics Visualizer</h1>
+               <p>Welcome to the FIFA World Cup Statistics Visualizer! Here, you can explore statistics from past World Cup tournaments and gain insights into the performance of your favorite teams and players.</p>
+               <p>Use the buttons on the side bar to navigate to different sections of the site.</p>
+            </div>
+         </div>
+      </div>
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+   </body>
 </html>
