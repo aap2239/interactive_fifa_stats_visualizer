@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <title>Players</title>
+      <title>Managers</title>
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
    </head>
    <body>
@@ -27,26 +27,25 @@
                </ul>
             </div>
             <div class="col-md-10">
-               <h1>Players</h1>
+               <h1>Managers</h1>
                <table class="table table-striped">
                   <thead>
                      <tr>
-                        <th>Player ID</th>
+                        <th>Manager ID</th>
                         <th>GIven Name</th>
                         <th>Family Name</th>
-                        <th>Tournaments Played In</th>
+                        
                         <!-- <th>Region Name</th>
                         <th>Confederation ID</th> -->
                         <!-- <th>Country Wiki</th> -->
                      </tr>
                   </thead>
                   <tbody>
-                     {% for player in players%}
+                     {% for manager in managers%}
                      <tr>
-                        <td>{{ player.player_id }}</td>
-                        <td><a href="{{ player.player_wiki }}" target="_blank">{{ player.player_given_name }}</a></td>
-                        <td><a href="{{ player.player_wiki }}" target="_blank">{{ player.player_family_name }}</a></td>
-                        <td>{{ player.Tournaments_Played }}</td>
+                        <td>{{ manager.manager_id }}</td>
+                        <td><a href="{{ manager.manager_wiki }}" target="_blank">{{ manager.manager_given_name }}</a></td>
+                        <td><a href="{{ manager.manager_wiki }}" target="_blank">{{ manager.manager_family_name }}</a></td>
                     </tr>
                      {% endfor %}
                   </tbody>

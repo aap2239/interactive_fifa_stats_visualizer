@@ -151,21 +151,49 @@ def awards():
 						FROM 
 							Awards"""
         cursor = g.conn.execute(text(select_query))
-        players = []
+        awards = []
         for result in cursor:
-            players_dict = {
+            awards_dict = {
                 "award_id": result[0],
                 "award_name": result[1],
                 "award_description": result[2],
                 "year_introduced": result[3],
             }
-            players.append(players_dict)
+            awards.append(awards_dict)
         cursor.close()
-        context = dict(players=players)
+        context = dict(awards=awards)
         return render_template("awards.html", **context)
     except Exception as e:
         print(e)
         return render_template("error.html")
+    
+@app.route("/managers")
+def managers():
+    try:
+        select_query = """SELECT 
+  							Manager_ID, 
+							Manager_Given_Name, 
+							Manager_Family_Name, 
+							Manager_Wiki
+						FROM 
+							Managers"""
+        cursor = g.conn.execute(text(select_query))
+        managers = []
+        for result in cursor:
+            managers_dict = {
+                "manager_id": result[0],
+                "manager_given_name": result[1],
+                "manager_family_name": result[2],
+                "manager_wiki": result[3],
+            }
+            managers.append(managers_dict)
+        cursor.close()
+        context = dict(managers=managers)
+        return render_template("managers.html", **context)
+    except Exception as e:
+        print(e)
+        return render_template("error.html")
+
 
 # Example of adding new data to the database
 @app.route("/add", methods=["POST"])
