@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Add Player</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-2 bg-dark">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/countries">Countries</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/players">Players</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/awards">Awards</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/managers">Managers</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-10">
+          <h1>Add Player</h1>
+          <form action="/add_players" method="POST">
+            <div class="form-group">
+              <label for="player_given_name">Player Given Name</label>
+              <input type="text" class="form-control" id="player_given_name" name="player_given_name" required>
+            </div>
+            <div class="form-group">
+                <label for="player_family_name">Player Family Name</label>
+                <input type="text" class="form-control" id="player_family_name" name="player_family_name" required>
+              </div>
+            <div class="form-group">
+              <label for="player_wiki">Player Wiki</label>
+              <input type="text" class="form-control" id="player_wiki" name="player_wiki" required>
+            </div>
+            <div class="form-group">
+              <label for="tournaments_played">Tournaments Played</label>
+              <input type="number" class="form-control" id="tournaments_played" name="tournaments_played" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Player</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  </body>
+</html>

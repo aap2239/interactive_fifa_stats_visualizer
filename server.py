@@ -25,6 +25,7 @@ DATABASEURI = (
 
 engine = create_engine(DATABASEURI)
 
+
 @app.before_request
 def before_request():
     """
@@ -54,6 +55,7 @@ def teardown_request(exception):
         g.conn.close()
     except Exception as e:
         pass
+
 
 @app.route("/")
 def index():
@@ -109,7 +111,8 @@ def countries():
     except Exception as e:
         print(e)
         return render_template("error.html")
-    
+
+
 @app.route("/players")
 def players():
     try:
@@ -166,7 +169,8 @@ def awards():
     except Exception as e:
         print(e)
         return render_template("error.html")
-    
+
+
 @app.route("/managers")
 def managers():
     try:
@@ -195,18 +199,82 @@ def managers():
         return render_template("error.html")
 
 
-# Example of adding new data to the database
-@app.route("/add", methods=["POST"])
-def add():
-    # accessing form inputs from user
-    name = request.form["name"]
+@app.route("/confederations")
+def confederations():
+    try:
+        select_query = """SELECT 
+  							Confederation_ID, 
+							Confederation_Name, 
+							Confederation_Code, 
+							COnfederation_Wiki
+						FROM 
+							Confederations"""
+        cursor = g.conn.execute(text(select_query))
+        confederations = []
+        for result in cursor:
+            confederations_dict = {
+                "confederation_id": result[0],
+                "confederation_name": result[1],
+                "confederation_code": result[2],
+                "confederation_wiki": result[3],
+            }
+            confederations.append(confederations_dict)
+        cursor.close()
+        context = dict(confederations=confederations)
+        return render_template("confederations.html", **context)
+    except Exception as e:
+        print(e)
+        return render_template("error.html")
 
-    # passing params in for each variable into query
-    params = {}
-    params["new_name"] = name
-    g.conn.execute(text("INSERT INTO test(name) VALUES (:new_name)"), params)
-    g.conn.commit()
-    return redirect("/")
+
+@app.route("/add_players", methods=["POST", "GET"])
+def add_players():
+    if request.method == "POST":
+        cursor = g.conn.execute(
+            text("SELECT MAX(SUBSTR(Player_ID, 3)) AS Max_Player_ID FROM Players;")
+        )
+        result = cursor.fetchall()[-1][-1]
+        cursor.close()
+        print(result, " - Result")
+        temp = int(result)
+        temp += 1
+        player_id = "P-" + str(temp)
+        player_given = request.form["player_given_name"]
+        player_family = request.form["player_family_name"]
+        player_wiki = request.form["player_wiki"]
+        num_tournaments = request.form["tournaments_played"]
+
+        query = f"INSERT INTO PLAYERS VALUES ('{player_id}', '{player_given}','{player_family}', '{player_wiki}', '{num_tournaments}')"
+        g.conn.execute(text(query))
+        g.conn.commit()
+        try:
+            select_query = """SELECT 
+                                Player_ID, 
+                                Player_Given_Name, 
+                                Player_Family_Name, 
+                                Player_Wiki, 
+                                Tournaments_Played 
+                            FROM 
+                                Players"""
+            cursor = g.conn.execute(text(select_query))
+            players = []
+            for result in cursor:
+                players_dict = {
+                    "player_id": result[0],
+                    "player_given_name": result[1],
+                    "player_family_name": result[2],
+                    "player_wiki": result[3],
+                    "Tournaments_Played": result[4],
+                }
+                players.append(players_dict)
+            cursor.close()
+            context = dict(players=players)
+            return render_template("players.html", **context)
+        except Exception as e:
+            print(e)
+            return render_template("error.html")
+
+    return render_template("add_players.html")
 
 
 @app.route("/login")

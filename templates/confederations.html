@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <title>FIFA World Cup Statistics Visualizer</title>
+      <title>Confederations</title>
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
    </head>
    <body>
@@ -10,14 +10,14 @@
             <div class="col-md-2 bg-dark">
                <ul class="nav flex-column">
                   <li class="nav-item">
-                     <a class="nav-link active" href="/">Home</a>
+                     <a class="nav-link" href="/">Home</a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link" href="/countries">Countries</a>
+                     <a class="nav-link active" href="/countries">Countries</a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link active" href="/confederations">Confederations</a>
-                  </li>
+                    <a class="nav-link active" href="/confederations">Confederations</a>
+                 </li>
                   <li class="nav-item">
                      <a class="nav-link" href="/players">Players</a>
                   </li>
@@ -30,9 +30,25 @@
                </ul>
             </div>
             <div class="col-md-10">
-               <h1>FIFA World Cup Statistics Visualizer</h1>
-               <p>Welcome to the FIFA World Cup Statistics Visualizer! Here, you can explore statistics from past World Cup tournaments and gain insights into the performance of your favorite teams and players.</p>
-               <p>Use the buttons on the side bar to navigate to different sections of the site.</p>
+               <h1>Confederations</h1>
+               <table class="table table-striped">
+                  <thead>
+                     <tr>
+                        <th>Confederation ID</th>
+                        <th>Confederation Name</th>
+                        <th>Confederation Code</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for confederation in confederations%}
+                     <tr>
+                        <td>{{ confederation.confederation_id }}</td>
+                        <td><a href="{{ confederation.confederation_wiki }}" target="_blank">{{ confederation.confederation_name }}</a></td>
+                        <td>{{ confederation.confederation_code }}</td>
+                    </tr>
+                     {% endfor %}
+                  </tbody>
+               </table>
             </div>
          </div>
       </div>
