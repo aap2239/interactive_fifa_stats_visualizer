@@ -9,7 +9,6 @@ Read about it online.
 """
 import os
 
-# accessible as a variable in index.html:
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response
@@ -17,19 +16,6 @@ from flask import Flask, request, render_template, g, redirect, Response
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
 app = Flask(__name__, template_folder=tmpl_dir)
 
-
-#
-# The following is a dummy URI that does not connect to a valid database. You will need to modify it to connect to your Part 2 database in order to use the data.
-#
-# XXX: The URI should be in the format of:
-#
-#     postgresql://USER:PASSWORD@34.73.36.248/project1
-#
-# For example, if you had username zy2431 and password 123123, then the following line would be:
-#
-#     DATABASEURI = "postgresql://zy2431:123123@34.73.36.248/project1"
-#
-# Modify these with your own credentials you received from TA!
 DATABASE_USERNAME = "aap2239"
 DATABASE_PASSWRD = "3205"
 DATABASE_HOST = "34.28.53.86"  # change to 34.28.53.86 if you used database 2 for part 2
@@ -37,29 +23,7 @@ DATABASEURI = (
     f"postgresql://{DATABASE_USERNAME}:{DATABASE_PASSWRD}@{DATABASE_HOST}/project1"
 )
 
-
-#
-# This line creates a database engine that knows how to connect to the URI above.
-#
 engine = create_engine(DATABASEURI)
-
-#
-# Example of running queries in your database
-# Note that this will probably not work if you already have a table named 'test' in your database, containing meaningful data. This is only an example showing you how to run queries in your database using SQLAlchemy.
-#
-# with engine.connect() as conn:
-# 	create_table_command = """
-# 	CREATE TABLE IF NOT EXISTS test (
-# 		id serial,
-# 		name text
-# 	)
-# 	"""
-# 	res = conn.execute(text(create_table_command))
-# 	insert_table_command = """INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace')"""
-# 	res = conn.execute(text(insert_table_command))
-# 	# you need to commit for create, insert, update queries to reflect
-# 	conn.commit()
-
 
 @app.before_request
 def before_request():
@@ -91,20 +55,6 @@ def teardown_request(exception):
     except Exception as e:
         pass
 
-
-#
-# @app.route is a decorator around index() that means:
-#   run index() whenever the user tries to access the "/" path using a GET request
-#
-# If you wanted the user to go to, for example, localhost:8111/foobar/ with POST or GET then you could use:
-#
-#       @app.route("/foobar/", methods=["POST", "GET"])
-#
-# PROTIP: (the trailing / in the path is important)
-#
-# see for routing: https://flask.palletsprojects.com/en/1.1.x/quickstart/#routing
-# see for decorators: http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/
-#
 @app.route("/")
 def index():
     """
@@ -119,14 +69,26 @@ def index():
 
     # DEBUG: this is debugging code to see what request looks like
     print(request.args)
-
     return render_template("index.html")
 
 
 @app.route("/countries")
 def countries():
     try:
-        select_query = "SELECT * from Countries"
+        select_query = """SELECT 
+  							Country_ID, 
+							Country_Name, 
+							Country_Code, 
+							Federation_Name, 
+							Region_Name, 
+							Confederation_Name, 
+							Country_Wiki,
+                            Confederation_Wiki
+						FROM 
+							Countries c1, 
+							Confederations c2 
+						WHERE 
+							c1.Confederation_ID = c2.Confederation_ID;"""
         cursor = g.conn.execute(text(select_query))
         countries = []
         for result in cursor:
@@ -136,13 +98,43 @@ def countries():
                 "Country_Code": result[2],
                 "Federation_Name": result[3],
                 "Region_Name": result[4],
-                "Confederation_ID": result[5],
-                # 'Country_Wiki': result[6],
+                "Confederation_Name": result[5],
+                "Country_Wiki": result[6],
+                "Confederation_Wiki": result[7],
             }
             countries.append(countries_dict)
         cursor.close()
         context = dict(countries=countries)
         return render_template("countries.html", **context)
+    except Exception as e:
+        print(e)
+        return render_template("error.html")
+    
+@app.route("/players")
+def players():
+    try:
+        select_query = """SELECT 
+  							Player_ID, 
+							Player_Given_Name, 
+							Player_Family_Name, 
+							Player_Wiki, 
+							Tournaments_Played 
+						FROM 
+							Players"""
+        cursor = g.conn.execute(text(select_query))
+        players = []
+        for result in cursor:
+            players_dict = {
+                "player_id": result[0],
+                "player_given_name": result[1],
+                "player_family_name": result[2],
+                "player_wiki": result[3],
+                "Tournaments_Played": result[4],
+            }
+            players.append(players_dict)
+        cursor.close()
+        context = dict(players=players)
+        return render_template("players.html", **context)
     except Exception as e:
         print(e)
         return render_template("error.html")

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <title>Countries </title>
+      <title>Players</title>
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
    </head>
    <body>
@@ -24,29 +24,27 @@
                </ul>
             </div>
             <div class="col-md-10">
-               <h1>Countries</h1>
+               <h1>Players</h1>
                <table class="table table-striped">
                   <thead>
                      <tr>
-                        <th>Country ID</th>
-                        <th>Country Name</th>
-                        <th>Country Code</th>
-                        <th>Federation Name</th>
-                        <th>Region Name</th>
-                        <th>Confederation ID</th>
+                        <th>Player ID</th>
+                        <th>GIven Name</th>
+                        <th>Family Name</th>
+                        <th>Tournaments Played In</th>
+                        <!-- <th>Region Name</th>
+                        <th>Confederation ID</th> -->
                         <!-- <th>Country Wiki</th> -->
                      </tr>
                   </thead>
                   <tbody>
-                     {% for country in countries %}
+                     {% for player in players%}
                      <tr>
-                        <td>{{ country.Country_ID }}</td>
-                        <td><a href="{{ country.Country_Wiki }}" target="_blank">{{ country.Country_Name }}</a></td>
-                        <td>{{ country.Country_Code }}</td>
-                        <td>{{ country.Federation_Name }}</td>
-                        <td>{{ country.Region_Name }}</td>
-                        <td><a href="{{ country.Confederation_Wiki }}" target="_blank">{{ country.Confederation_Name }}</a></td>
-                     </tr>
+                        <td>{{ player.player_id }}</td>
+                        <td><a href="{{ player.player_wiki }}" target="_blank">{{ player.player_given_name }}</a></td>
+                        <td><a href="{{ player.player_wiki }}" target="_blank">{{ player.player_family_name }}</a></td>
+                        <td>{{ player.Tournaments_Played }}</td>
+                    </tr>
                      {% endfor %}
                   </tbody>
                </table>
