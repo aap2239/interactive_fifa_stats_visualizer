@@ -197,6 +197,42 @@ def managers():
     except Exception as e:
         print(e)
         return render_template("error.html")
+    
+@app.route("/squads")
+def squads():
+    try:
+        select_query = """SELECT 
+  							Squad_ID, 
+							Country_Name, 
+							Tournament_Name, 
+							Manager_Given_Name,
+                            Manager_Family_Name
+						FROM 
+							Squads s1,
+                            Managers m1, 
+                            Tournaments t1, 
+                            Countries c1
+                        WHERE
+                            s1.manager_id = m1.manager_id AND
+                            s1.tournament_id = t1.tournament_id AND
+                            s1.country_id = c1.country_id;"""
+        cursor = g.conn.execute(text(select_query))
+        squads = []
+        for result in cursor:
+            squads_dict = {
+                "squad_id": result[0],
+                "country_name": result[1],
+                "tournament_name": result[2],
+                "manager_given_name": result[3],
+                "manager_family_name": result[4],
+            }
+            squads.append(squads_dict)
+        cursor.close()
+        context = dict(squads=squads)
+        return render_template("squads.html", **context)
+    except Exception as e:
+        print(e)
+        return render_template("error.html")
 
 
 @app.route("/confederations")
@@ -206,7 +242,7 @@ def confederations():
   							Confederation_ID, 
 							Confederation_Name, 
 							Confederation_Code, 
-							COnfederation_Wiki
+							Confederation_Wiki
 						FROM 
 							Confederations"""
         cursor = g.conn.execute(text(select_query))
