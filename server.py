@@ -271,7 +271,6 @@ def add_players():
         )
         result = cursor.fetchall()[-1][-1]
         cursor.close()
-        print(result, " - Result")
         temp = int(result)
         temp += 1
         player_id = "P-" + str(temp)
@@ -477,6 +476,56 @@ def squad_members():
         cursor.close()
         context = dict(squad_members=squad_members)
         return render_template("squad_members.html", **context)
+    except Exception as e:
+        print(e)
+        return render_template("error.html")
+    
+@app.route("/matches")
+def matches():
+    try:
+        select_query = f"""SELECT 
+                            match_id,
+                            match_name
+                            stage_name,
+                            group_name,
+                            stadium_name,
+                            result,
+                            score,
+                            c1.country_name,
+                            c2.country_name,
+                            match_date,
+                            match_time
+                        FROM 
+                            matches m1,
+                            squads s1,
+                            squads s2,
+                            countries c1,
+                            countries c2
+                        WHERE
+                            m1.home_squad_id = s1.squad_id AND s1.country_id = c1.country_id AND 
+                            m1.away_squad_id = s2.squad_id and s2.country_id = c2.country_id;"""
+        cursor = g.conn.execute(text(select_query))
+        matches = []
+        for result in cursor:
+            matches_dict = {
+                "match_id": result[0],
+                "match_name": result[1],
+                #"stage_name": result[4],
+                "group_name": result[2],
+                "stadium_name": result[3],
+                "result": result[4],
+                "score": result[5],
+                "home_squad": result[6],
+                "away_squad": result[7],
+                "match_date": result[8],
+                "match_time": result[9],
+            }
+            print(matches_dict)
+            matches.append(matches_dict)
+        cursor.close()
+        print(matches)
+        context = dict(matches=matches)
+        return render_template("matches.html", **context)
     except Exception as e:
         print(e)
         return render_template("error.html")

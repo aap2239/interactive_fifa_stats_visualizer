@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Squad Members</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+   </head>
+   <body>
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-md-2 bg-dark">
+               <ul class="nav flex-column">
+                  <li class="nav-item">
+                     <a class="nav-link" href="/">Home</a>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link active" href="/countries">Countries</a>
+                     <ul style="list-style-type: lower-alpha; padding-bottom: 0;">
+                        <li style="margin-left:2em"><a class="nav-link active" href="/squads">Squads</a></li>
+                    </ul>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" href="/confederations">Confederations</a>
+                 </li>
+                  <li class="nav-item">
+                     <a class="nav-link" href="/players">Players</a>
+                     <ul style="list-style-type: lower-alpha; padding-bottom: 0;">
+                        <li style="margin-left:2em"><a class="nav-link active" href="/squad_members">Squad Members</a></li>
+                    </ul>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link" href="/awards">Awards</a>
+                        <ul style="list-style-type: lower-alpha; padding-bottom: 0;">
+                            <li style="margin-left:2em"><a class="nav-link active" href="/awards_won">Awards Won By Players</a></li>
+                        </ul>
+                  </li>
+                  <li class="nav-item">
+                     <a class="nav-link" href="/managers">Managers</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/matches">Matches</a>
+                 </li>
+               </ul>
+            </div>
+            <div class="col-md-10">
+               <h1>Squad Members</h1>
+               <form action="/squad_members" method="POST">
+                <div class="form-group">
+                  <label for="squad_id">Enter Squad ID to Filter</label>
+                  <input type="text" class="form-control" id="squad_id" name="squad_id">
+                </div>
+                <button type="submit" class="btn btn-primary">Filter</button>
+              </form>
+               <table class="table table-striped">
+                  <thead>
+                     <tr>
+                        <th>Squad ID</th>
+                        <th>Player Given Name</th>
+                        <th>Player Family Name</th>
+                        <th>Tournament Name</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for squad_member in squad_members%}
+                     <tr>
+                        <td>{{ squad_member.squad_id }}</td>
+                        <td>{{ squad_member.player_given_name }}</td>
+                        <td>{{ squad_member.player_family_name }}</td>
+                        <td>{{ squad_member.tournament_name }}</td>
+                    </tr>
+                     {% endfor %}
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+   </body>
+</html>

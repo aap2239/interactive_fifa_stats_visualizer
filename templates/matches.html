@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <title>Managers</title>
+      <title>Matches</title>
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
    </head>
    <body>
@@ -29,38 +29,50 @@
                   </li>
                   <li class="nav-item">
                      <a class="nav-link" href="/awards">Awards</a>
-                     <ul style="list-style-type: lower-alpha; padding-bottom: 0;">
-                        <li style="margin-left:2em"><a class="nav-link active" href="/awards_won">Awards Won By Players</a></li>
-                    </ul>
+                        <ul style="list-style-type: lower-alpha; padding-bottom: 0;">
+                            <li style="margin-left:2em"><a class="nav-link active" href="/awards_won">Awards Won By Players</a></li>
+                        </ul>
                   </li>
                   <li class="nav-item">
                      <a class="nav-link" href="/managers">Managers</a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link" href="/matches">Matches</a>
-                  </li>
+                    <a class="nav-link" href="/matches">Matches</a>
+                 </li>
                </ul>
             </div>
             <div class="col-md-10">
-               <h1>Managers</h1>
+               <h1>Matches</h1>
                <table class="table table-striped">
-                  <thead>
-                     <tr>
-                        <th>Manager ID</th>
-                        <th>GIven Name</th>
-                        <th>Family Name</th>
-                        
-                        <!-- <th>Region Name</th>
-                        <th>Confederation ID</th> -->
-                        <!-- <th>Country Wiki</th> -->
-                     </tr>
-                  </thead>
-                  <tbody>
-                     {% for manager in managers%}
-                     <tr>
-                        <td>{{ manager.manager_id }}</td>
-                        <td><a href="{{ manager.manager_wiki }}" target="_blank">{{ manager.manager_given_name }}</a></td>
-                        <td><a href="{{ manager.manager_wiki }}" target="_blank">{{ manager.manager_family_name }}</a></td>
+                <thead>
+                    <tr>
+                       <th>Match ID</th>
+                       <th>Match Name</th>
+                       <th>Home Squad</th>
+                       <th>Away Squad</th>
+                       <th>Stage Name</th>
+                       <th>Group Name</th>
+                       <th>Stadium Name</th>
+                       <th>Result</th>
+                       <th>Score</th>
+                       <th>Match Date</th>
+                       <th>Match Time</th>
+                    </tr>
+                 </thead>
+                 <tbody>
+                    {% for match in matches %}
+                    <tr>
+                       <td>{{ match.match_id }}</td>
+                       <td>{{ match.match_name }}</td>
+                       <td>{{ match.home_squad }}</td>
+                       <td>{{ match.away_squad }}</td>
+                       <td>{{ match.stage_name }}</td>
+                       <td>{{ match.group_name }}</td>
+                       <td>{{ match.stadium_name }}</td>
+                       <td>{{ match.result }}</td>
+                       <td>{{ match.score }}</td>
+                       <td>{{ match.match_date }}</td>
+                       <td>{{ match.match_time }}</td>
                     </tr>
                      {% endfor %}
                   </tbody>
