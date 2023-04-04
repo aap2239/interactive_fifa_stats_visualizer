@@ -312,11 +312,174 @@ def add_players():
 
     return render_template("add_players.html")
 
+@app.route("/awards_won", methods=["POST", "GET"])
+def awards_won():
+    if request.method == "POST":
+        award_name = request.form["award_name"]
 
-@app.route("/login")
-def login():
-    abort(401)
-    this_is_never_executed()
+        if len(award_name) > 0:
+            select_query = f"""SELECT 
+  							award_name, 
+							player_given_name, 
+							player_family_name, 
+							tournament_name
+						FROM 
+							awards a1,
+                            players p1,
+                            tournaments t1,
+                            has_won hw1
+                        WHERE
+                            hw1.award_id = a1.award_id AND
+                            hw1.player_id = p1.player_id AND 
+                            hw1.tournament_id = t1.tournament_id AND 
+                            a1.award_name = \'{award_name}\'
+                        ORDER BY 
+                            tournament_name, award_name;"""
+        else:
+            select_query = f"""SELECT 
+  							award_name, 
+							player_given_name, 
+							player_family_name, 
+							tournament_name
+						FROM 
+							awards a1,
+                            players p1,
+                            tournaments t1,
+                            has_won hw1
+                        WHERE
+                            hw1.award_id = a1.award_id AND
+                            hw1.player_id = p1.player_id AND 
+                            hw1.tournament_id = t1.tournament_id
+                        ORDER BY 
+                            tournament_name, award_name;"""
+        try:
+
+            cursor = g.conn.execute(text(select_query))
+            awards_won = []
+            for result in cursor:
+                awards_won_dict = {
+                    "award_name": result[0],
+                    "player_given_name": result[1],
+                    "player_family_name": result[2],
+                    "tournament_name": result[3],
+                }
+                awards_won.append(awards_won_dict)
+            cursor.close()
+            context = dict(awards_won=awards_won)
+            return render_template("awards_won.html", **context)
+        except Exception as e:
+            print(e)
+            return render_template("error.html")
+
+    try:
+        select_query = """SELECT 
+  							award_name, 
+							player_given_name, 
+							player_family_name, 
+							tournament_name
+						FROM 
+							awards a1,
+                            players p1,
+                            tournaments t1,
+                            has_won hw1
+                        WHERE
+                            hw1.award_id = a1.award_id AND
+                            hw1.player_id = p1.player_id AND 
+                            hw1.tournament_id = t1.tournament_id
+                        ORDER BY 
+                            tournament_name, award_name;"""
+        cursor = g.conn.execute(text(select_query))
+        awards_won = []
+        for result in cursor:
+            awards_won_dict = {
+                "award_name": result[0],
+                "player_given_name": result[1],
+                "player_family_name": result[2],
+                "tournament_name": result[3],
+            }
+            awards_won.append(awards_won_dict)
+        cursor.close()
+        context = dict(awards_won=awards_won)
+        return render_template("awards_won.html", **context)
+    except Exception as e:
+        print(e)
+        return render_template("error.html")
+    
+@app.route("/squad_members", methods=["POST", "GET"])
+def squad_members():
+    if request.method == "POST":
+        squad_id = request.form["squad_id"]
+        select_query = f"""SELECT 
+                                hw1.squad_id, 
+                                player_given_name, 
+                                player_family_name, 
+                                tournament_name
+                            FROM 
+                                squads a1,
+                                players p1,
+                                tournaments t1,
+                                plays_for hw1
+                            WHERE
+                                hw1.squad_id = a1.squad_id AND
+                                hw1.player_id = p1.player_id AND 
+                                a1.tournament_id = t1.tournament_id AND 
+                                a1.squad_id = \'{squad_id}\'
+                            ORDER BY 
+                                tournament_name;"""
+        try:
+            cursor = g.conn.execute(text(select_query))
+            squad_members = []
+            for result in cursor:
+                squad_members_dict = {
+                    "squad_id": result[0],
+                    "player_given_name": result[1],
+                    "player_family_name": result[2],
+                    "tournament_name": result[3],
+                }
+                squad_members.append(squad_members_dict)
+            cursor.close()
+            context = dict(squad_members=squad_members)
+            return render_template("squad_members.html", **context)
+        except Exception as e:
+            print(e)
+            return render_template("error.html")
+
+
+
+    try:
+        select_query = f"""SELECT 
+                            hw1.squad_id, 
+                            player_given_name, 
+                            player_family_name, 
+                            tournament_name
+                        FROM 
+                            squads a1,
+                            players p1,
+                            tournaments t1,
+                            plays_for hw1
+                        WHERE
+                            hw1.squad_id = a1.squad_id AND
+                            hw1.player_id = p1.player_id AND 
+                            a1.tournament_id = t1.tournament_id AND 
+                            a1.squad_id = \'SQ-0001\'
+                        ORDER BY 
+                            tournament_name;"""
+        cursor = g.conn.execute(text(select_query))
+        squad_members = []
+        for result in cursor:
+            squad_members_dict = {
+                "squad_id": result[0],
+                "player_given_name": result[1],
+                "player_family_name": result[2],
+                "tournament_name": result[3],
+            }
+            squad_members.append(squad_members_dict)
+        cursor.close()
+        context = dict(squad_members=squad_members)
+        return render_template("squad_members.html", **context)
+    except Exception as e:
+        print(e)
+        return render_template("error.html")
 
 
 if __name__ == "__main__":

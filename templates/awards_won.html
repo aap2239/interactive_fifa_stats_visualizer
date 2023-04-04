@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <title>Managers</title>
+      <title>Awards Won</title>
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
    </head>
    <body>
@@ -29,9 +29,9 @@
                   </li>
                   <li class="nav-item">
                      <a class="nav-link" href="/awards">Awards</a>
-                     <ul style="list-style-type: lower-alpha; padding-bottom: 0;">
-                        <li style="margin-left:2em"><a class="nav-link active" href="/awards_won">Awards Won By Players</a></li>
-                    </ul>
+                        <ul style="list-style-type: lower-alpha; padding-bottom: 0;">
+                            <li style="margin-left:2em"><a class="nav-link active" href="/awards_won">Awards Won By Players</a></li>
+                        </ul>
                   </li>
                   <li class="nav-item">
                      <a class="nav-link" href="/managers">Managers</a>
@@ -39,25 +39,30 @@
                </ul>
             </div>
             <div class="col-md-10">
-               <h1>Managers</h1>
+               <h1>Awards Won</h1>
+               <form action="/awards_won" method="POST">
+                <div class="form-group">
+                  <label for="award_name">Enter Award to Filter</label>
+                  <input type="text" class="form-control" id="award_name" name="award_name">
+                </div>
+                <button type="submit" class="btn btn-primary">Filter</button>
+              </form>
                <table class="table table-striped">
                   <thead>
                      <tr>
-                        <th>Manager ID</th>
-                        <th>GIven Name</th>
-                        <th>Family Name</th>
-                        
-                        <!-- <th>Region Name</th>
-                        <th>Confederation ID</th> -->
-                        <!-- <th>Country Wiki</th> -->
+                        <th>Award Name</th>
+                        <th>Player Given Name</th>
+                        <th>Player Family Name</th>
+                        <th>Tournament Name</th>
                      </tr>
                   </thead>
                   <tbody>
-                     {% for manager in managers%}
+                     {% for award_won in awards_won%}
                      <tr>
-                        <td>{{ manager.manager_id }}</td>
-                        <td><a href="{{ manager.manager_wiki }}" target="_blank">{{ manager.manager_given_name }}</a></td>
-                        <td><a href="{{ manager.manager_wiki }}" target="_blank">{{ manager.manager_family_name }}</a></td>
+                        <td>{{ award_won.award_name }}</td>
+                        <td>{{ award_won.player_given_name }}</td>
+                        <td>{{ award_won.player_family_name }}</td>
+                        <td>{{ award_won.tournament_name }}</td>
                     </tr>
                      {% endfor %}
                   </tbody>
