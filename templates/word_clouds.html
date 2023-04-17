@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Word Clouds</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+      <script src="https://pulipulichen.github.io/blogger/posts/2016/11/r-text-mining/wordcloud2.js"></script>
+      <style>
+        #word-cloud-football, #word-cloud-soccer {
+            width: 500px;
+            height: 500px;
+            border: 1px solid #ccc;
+        }
+      </style>
+   </head>
+   <body>
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-md-2 bg-dark">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                       <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                       <a class="nav-link active" href="/countries">Countries</a>
+                       <ul style="list-style-type: lower-alpha; padding-bottom: 0;">
+                          <li style="margin-left:2em"><a class="nav-link active" href="/squads">Squads</a></li>
+                      </ul>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link active" href="/confederations">Confederations</a>
+                   </li>
+                    <li class="nav-item">
+                       <a class="nav-link" href="/players">Players</a>
+                       <ul style="list-style-type: lower-alpha; padding-bottom: 0;">
+                          <li style="margin-left:2em"><a class="nav-link active" href="/squad_members">Squad Members</a></li>
+                      </ul>
+                    </li>
+                    <li class="nav-item">
+                       <a class="nav-link" href="/awards">Awards</a>
+                          <ul style="list-style-type: lower-alpha; padding-bottom: 0;">
+                              <li style="margin-left:2em"><a class="nav-link active" href="/awards_won">Awards Won By Players</a></li>
+                          </ul>
+                    </li>
+                    <li class="nav-item">
+                       <a class="nav-link" href="/managers">Managers</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/matches">Matches</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/word_clouds">Word Clouds</a>
+                    </li>
+                 </ul>
+            </div>
+            <div class="col-md-10">
+               <h1>Word Clouds</h1>
+               <div class="row">
+                  <div class="col-md-6">
+                     <h3>Football</h3>
+                     <div id="word-cloud-football"><canvas></canvas></div>
+                  </div>
+                  <div class="col-md-6">
+                     <h3>Soccer</h3>
+                     <div id="word-cloud-soccer"><canvas></canvas></div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script>
+        // Prepare data for word clouds
+        var footballData = {{ football_data|tojson }};
+        var soccerData = {{ soccer_data|tojson }};
+        var maxData = Math.max(footballData.length, soccerData.length)
+        // Convert data to format suitable for wordcloud2.js
+        footballList = [];
+        for (var i in footballData) {
+            footballList.push([footballData[i]["country_name"], (maxData - i)]);
+        }
+        WordCloud.minFontSize = "15px";
+        WordCloud(document.getElementById("word-cloud-football"), { list: footballList });
+
+        // Create the word clouds
+        soccerList = [];
+        for (var i in soccerData) {
+            soccerList.push([soccerData[i]["country_name"], (maxData - i)]);
+        }
+        WordCloud(document.getElementById('word-cloud-soccer'), { list: soccerList });
+      </script>
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+   </body>
+</html>

@@ -10,21 +10,39 @@
         <div class="col-md-2 bg-dark">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link" href="/">Home</a>
+               <a class="nav-link" href="/">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/countries">Countries</a>
+               <a class="nav-link active" href="/countries">Countries</a>
+               <ul style="list-style-type: lower-alpha; padding-bottom: 0;">
+                   <li style="margin-left:2em"><a class="nav-link active" href="/squads">Squads</a></li>
+               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/players">Players</a>
+               <a class="nav-link active" href="/confederations">Confederations</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/awards">Awards</a>
+               <a class="nav-link" href="/players">Players</a>
+               <ul style="list-style-type: lower-alpha; padding-bottom: 0;">
+                  <li style="margin-left:2em"><a class="nav-link active" href="/squad_members">Squad Members</a></li>
+              </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/managers">Managers</a>
+               <a class="nav-link" href="/awards">Awards</a>
+               <ul style="list-style-type: lower-alpha; padding-bottom: 0;">
+                  <li style="margin-left:2em"><a class="nav-link active" href="/awards_won">Awards Won By Players</a></li>
+              </ul>
             </li>
-          </ul>
+            <li class="nav-item">
+               <a class="nav-link" href="/managers">Managers</a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link" href="/matches">Matches</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/word_clouds">Word Clouds</a>
+          </li>
+         </ul>
         </div>
         <div class="col-md-10">
           <h1>Add Player</h1>
@@ -42,8 +60,12 @@
               <input type="text" class="form-control" id="player_wiki" name="player_wiki" required>
             </div>
             <div class="form-group">
+              <label for="squad_ids">Squad IDs (separated by commas)</label>
+              <input type="text" class="form-control" id="squad_ids" name="squad_ids" placeholder="SQ-0001, SQ-0002" required>
+            </div>
+            <div class="form-group">
               <label for="tournaments_played">Tournaments Played</label>
-              <input type="number" class="form-control" id="tournaments_played" name="tournaments_played" required>
+              <input type="number" class="form-control" id="tournaments_played" name="tournaments_played" min="1" required>
             </div>
             <button type="submit" class="btn btn-primary">Add Player</button>
           </form>

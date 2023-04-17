@@ -12,6 +12,9 @@ import os
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response
+from sqlalchemy import create_engine, text
+from sqlalchemy.sql.expression import bindparam
+from sqlalchemy.dialects.postgresql import ARRAY
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
 app = Flask(__name__, template_folder=tmpl_dir)
@@ -97,6 +100,7 @@ def countries():
             countries_dict = {
                 "Country_ID": result[0],
                 "Country_Name": result[1],
+                "Country_Details_URL": f"/country/{result[0]}",
                 "Country_Code": result[2],
                 "Federation_Name": result[3],
                 "Region_Name": result[4],
@@ -262,54 +266,83 @@ def confederations():
         print(e)
         return render_template("error.html")
 
-
 @app.route("/add_players", methods=["POST", "GET"])
 def add_players():
     if request.method == "POST":
-        cursor = g.conn.execute(
-            text("SELECT MAX(SUBSTR(Player_ID, 3)) AS Max_Player_ID FROM Players;")
-        )
-        result = cursor.fetchall()[-1][-1]
-        cursor.close()
-        temp = int(result)
-        temp += 1
-        player_id = "P-" + str(temp)
-        player_given = request.form["player_given_name"]
-        player_family = request.form["player_family_name"]
-        player_wiki = request.form["player_wiki"]
-        num_tournaments = request.form["tournaments_played"]
+        # Get the squad_ids from the form and split them by commas
+        squad_ids = request.form["squad_ids"].split(',')
 
-        query = f"INSERT INTO PLAYERS VALUES ('{player_id}', '{player_given}','{player_family}', '{player_wiki}', '{num_tournaments}')"
-        g.conn.execute(text(query))
-        g.conn.commit()
-        try:
-            select_query = """SELECT 
-                                Player_ID, 
-                                Player_Given_Name, 
-                                Player_Family_Name, 
-                                Player_Wiki, 
-                                Tournaments_Played 
-                            FROM 
-                                Players"""
-            cursor = g.conn.execute(text(select_query))
-            players = []
-            for result in cursor:
-                players_dict = {
-                    "player_id": result[0],
-                    "player_given_name": result[1],
-                    "player_family_name": result[2],
-                    "player_wiki": result[3],
-                    "Tournaments_Played": result[4],
-                }
-                players.append(players_dict)
-            cursor.close()
-            context = dict(players=players)
-            return render_template("players.html", **context)
-        except Exception as e:
-            print(e)
-            return render_template("error.html")
+        # Check if the tournament years for different squads is different
+        #squad_years_query = text("SELECT DISTINCT tournament_id FROM Squads WHERE Squad_ID = ANY(:squad_ids)").bindparams(bindparam("squad_ids", type_=ARRAY(String)))
+        #squad_years = g.conn.execute(squad_years_query, squad_ids=squad_ids).fetchall()
+
+        if True: #len(squad_years) == len(squad_ids):
+            # Check if all squad_ids exist in the Squads table
+            # squad_check_query = text("SELECT COUNT(*) FROM Squads WHERE Squad_ID = ANY(:squad_ids)")
+            # squad_count = g.conn.execute(squad_check_query, squad_ids=squad_ids).scalar()
+
+            if True: #squad_count == len(squad_ids):
+                cursor = g.conn.execute(
+                    text("SELECT MAX(SUBSTR(Player_ID, 3)) AS Max_Player_ID FROM Players;")
+                )
+                result = cursor.fetchall()[-1][-1]
+                cursor.close()
+                temp = int(result)
+                temp += 1
+                player_id = "P-" + str(temp)
+                player_given = request.form["player_given_name"]
+                player_family = request.form["player_family_name"]
+                player_wiki = request.form["player_wiki"]
+                num_tournaments = request.form["tournaments_played"]
+
+                query = f"INSERT INTO PLAYERS VALUES ('{player_id}', '{player_given}','{player_family}', '{player_wiki}', '{num_tournaments}')"
+                g.conn.execute(text(query))
+
+                # Update the Squads table to append the player_id to the player_ids array for each squad_id
+                for squad_id in squad_ids:
+                    update_squads_query = f"UPDATE Squads SET Player_IDs = array_append(Player_IDs, '{player_id}') WHERE Squad_ID = '{squad_id.strip()}'"
+                    g.conn.execute(text(update_squads_query))
+
+                g.conn.commit()
+
+                try:
+                    select_query = """SELECT 
+                                        Player_ID, 
+                                        Player_Given_Name, 
+                                        Player_Family_Name, 
+                                        Player_Wiki, 
+                                        Tournaments_Played 
+                                    FROM 
+                                        Players"""
+                    cursor = g.conn.execute(text(select_query))
+                    players = []
+                    for result in cursor:
+                        players_dict = {
+                            "player_id": result[0],
+                            "player_given_name": result[1],
+                            "player_family_name": result[2],
+                            "player_wiki": result[3],
+                            "Tournaments_Played": result[4],
+                        }
+                        players.append(players_dict)
+                    cursor.close()
+                    context = dict(players=players)
+                    return render_template("players.html", **context)
+                except Exception as e:
+                    print(e)
+                    return render_template("error.html")
+
+            else:
+                # Handle case when one or more squad_ids don't exist in the Squads table
+                error_message = "One or more squad_ids don't exist in the Squads table. Please provide valid squad_ids."
+                return render_template("error.html", error_message=error_message)
+        else:
+            # Handle case when the tournament years for different squads are not different
+            error_message = "The tournament years for different squads must be different. Please provide squads with different tournament years."
+            return render_template("error.html", error_message=error_message)
 
     return render_template("add_players.html")
+
 
 @app.route("/awards_won", methods=["POST", "GET"])
 def awards_won():
@@ -404,27 +437,47 @@ def awards_won():
         print(e)
         return render_template("error.html")
     
+@app.route("/country/<country_id>")
+def country_details(country_id):
+    try:
+        select_query = f"""SELECT 
+                              Country_Name, 
+                              countries_wiki_intro 
+                            FROM 
+                              Countries
+                            WHERE
+                              Country_ID = '{country_id}';"""
+        cursor = g.conn.execute(text(select_query))
+        result = cursor.fetchone()
+        cursor.close()
+        if result:
+            country_name = result[0]
+            wiki_intro = result[1]
+            return render_template("country_details.html", country_name=country_name, wiki_intro=wiki_intro)
+        else:
+            return render_template("error.html")
+    except Exception as e:
+        print(e)
+        return render_template("error.html")
+    
 @app.route("/squad_members", methods=["POST", "GET"])
 def squad_members():
     if request.method == "POST":
         squad_id = request.form["squad_id"]
         select_query = f"""SELECT 
-                                hw1.squad_id, 
-                                player_given_name, 
-                                player_family_name, 
-                                tournament_name
+                                a1.squad_id, 
+                                p1.player_given_name, 
+                                p1.player_family_name, 
+                                t1.tournament_name
                             FROM 
                                 squads a1,
                                 players p1,
-                                tournaments t1,
-                                plays_for hw1
+                                tournaments t1
                             WHERE
-                                hw1.squad_id = a1.squad_id AND
-                                hw1.player_id = p1.player_id AND 
-                                a1.tournament_id = t1.tournament_id AND 
-                                a1.squad_id = \'{squad_id}\'
-                            ORDER BY 
-                                tournament_name;"""
+                                a1.tournament_id = t1.tournament_id AND
+                                a1.squad_id = \'{squad_id}\' AND
+                                p1.player_id = ANY(a1.player_ids)"""
+
         try:
             cursor = g.conn.execute(text(select_query))
             squad_members = []
@@ -442,27 +495,21 @@ def squad_members():
         except Exception as e:
             print(e)
             return render_template("error.html")
-
-
-
+        
     try:
         select_query = f"""SELECT 
-                            hw1.squad_id, 
-                            player_given_name, 
-                            player_family_name, 
-                            tournament_name
-                        FROM 
-                            squads a1,
-                            players p1,
-                            tournaments t1,
-                            plays_for hw1
-                        WHERE
-                            hw1.squad_id = a1.squad_id AND
-                            hw1.player_id = p1.player_id AND 
-                            a1.tournament_id = t1.tournament_id AND 
-                            a1.squad_id = \'SQ-0001\'
-                        ORDER BY 
-                            tournament_name;"""
+                                a1.squad_id, 
+                                p1.player_given_name, 
+                                p1.player_family_name, 
+                                t1.tournament_name
+                            FROM 
+                                squads a1,
+                                players p1,
+                                tournaments t1
+                            WHERE
+                                a1.tournament_id = t1.tournament_id AND
+                                a1.squad_id = \'SQ-0001\' AND
+                                p1.player_id = ANY(a1.player_ids)"""
         cursor = g.conn.execute(text(select_query))
         squad_members = []
         for result in cursor:
@@ -479,6 +526,33 @@ def squad_members():
     except Exception as e:
         print(e)
         return render_template("error.html")
+    
+from sqlalchemy import text
+
+@app.route("/word_clouds")
+def word_clouds():
+    football_query = text("""SELECT country_name, ts_rank(to_tsvector('english', countries_wiki_intro), to_tsquery('english', 'football')) AS rank
+                             FROM countries
+                             WHERE to_tsvector('english', countries_wiki_intro) @@ to_tsquery('english', 'football')
+                             ORDER BY rank DESC;""")
+    soccer_query = text("""SELECT country_name, ts_rank(to_tsvector('english', countries_wiki_intro), to_tsquery('english', 'soccer')) AS rank
+                           FROM countries
+                           WHERE to_tsvector('english', countries_wiki_intro) @@ to_tsquery('english', 'soccer')
+                           ORDER BY rank DESC;""")
+
+    football_results = g.conn.execute(football_query).fetchall()
+    soccer_results = g.conn.execute(soccer_query).fetchall()
+
+    # Convert Row objects to dictionaries
+    football_data = [{"country_name": row[0], "rank": row[1]} for row in football_results]
+    soccer_data = [{"country_name": row[0], "rank": row[1]} for row in soccer_results]
+
+    context = {
+        "football_data": football_data,
+        "soccer_data": soccer_data
+    }
+    return render_template("word_clouds.html", **context)
+
     
 @app.route("/matches")
 def matches():

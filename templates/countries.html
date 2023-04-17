@@ -39,6 +39,9 @@
                   <li class="nav-item">
                      <a class="nav-link" href="/matches">Matches</a>
                   </li>
+                  <li class="nav-item">
+                     <a class="nav-link" href="/word_clouds">Word Clouds</a>
+                 </li>
                </ul>
             </div>
             <div class="col-md-10">
@@ -59,7 +62,7 @@
                      {% for country in countries %}
                      <tr>
                         <td>{{ country.Country_ID }}</td>
-                        <td><a href="{{ country.Country_Wiki }}" target="_blank">{{ country.Country_Name }}</a></td>
+                        <td><a href="{{ country.Country_Details_URL }}">{{ country.Country_Name }}</a></td>
                         <td>{{ country.Country_Code }}</td>
                         <td>{{ country.Federation_Name }}</td>
                         <td>{{ country.Region_Name }}</td>
