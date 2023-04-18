@@ -271,17 +271,8 @@ def add_players():
     if request.method == "POST":
         # Get the squad_ids from the form and split them by commas
         squad_ids = request.form["squad_ids"].split(',')
-
-        # Check if the tournament years for different squads is different
-        #squad_years_query = text("SELECT DISTINCT tournament_id FROM Squads WHERE Squad_ID = ANY(:squad_ids)").bindparams(bindparam("squad_ids", type_=ARRAY(String)))
-        #squad_years = g.conn.execute(squad_years_query, squad_ids=squad_ids).fetchall()
-
-        if True: #len(squad_years) == len(squad_ids):
-            # Check if all squad_ids exist in the Squads table
-            # squad_check_query = text("SELECT COUNT(*) FROM Squads WHERE Squad_ID = ANY(:squad_ids)")
-            # squad_count = g.conn.execute(squad_check_query, squad_ids=squad_ids).scalar()
-
-            if True: #squad_count == len(squad_ids):
+        if True:
+            if True:
                 cursor = g.conn.execute(
                     text("SELECT MAX(SUBSTR(Player_ID, 3)) AS Max_Player_ID FROM Players;")
                 )
@@ -294,8 +285,10 @@ def add_players():
                 player_family = request.form["player_family_name"]
                 player_wiki = request.form["player_wiki"]
                 num_tournaments = request.form["tournaments_played"]
-
-                query = f"INSERT INTO PLAYERS VALUES ('{player_id}', '{player_given}','{player_family}', '{player_wiki}', '{num_tournaments}')"
+                if player_wiki == "":
+                    query = f"INSERT INTO Players (player_id, player_given_name, player_family_name, tournaments_played) VALUES ('{player_id}', '{player_given}','{player_family}', '{num_tournaments}')"
+                else:
+                    query = f"INSERT INTO PLAYERS VALUES ('{player_id}', '{player_given}','{player_family}', '{player_wiki}', '{num_tournaments}')"
                 g.conn.execute(text(query))
 
                 # Update the Squads table to append the player_id to the player_ids array for each squad_id
